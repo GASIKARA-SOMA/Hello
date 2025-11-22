@@ -1,12 +1,8 @@
 require('dotenv').config();
 const express = require('express');
-const bcrypt = require('bcryptjs');
 const app = express();
 
 app.use(express.json());
-
-// CONFIGURATION SÉCURISÉE
-const ADMIN_PASSWORD_HASH = process.env.ADMIN_PASSWORD || "$2a$10$d2rYXn4Y3pY3pY3pY3pY3uY3pY3pY3pY3pY3pY3pY3pY3pY3pY3pY";
 
 // CONFIGURATION DU SITE
 let siteConfig = {
@@ -87,37 +83,19 @@ app.get('/', (req, res) => {
   res.send(html);
 });
 
-// CONNEXION ADMIN SÉCURISÉE
-app.post('/admin/login', async (req, res) => {
-  try {
-    const { password } = req.body;
-    
-    if (!password) {
-      return res.json({ success: false, error: "Mot de passe requis" });
-    }
-
-    const isValid = await bcrypt.compare(password, ADMIN_PASSWORD_HASH);
-    
-    if (isValid) {
-      res.json({ 
-        success: true, 
-        message: "Connexion admin réussie !" 
-      });
-    } else {
-      res.json({ 
-        success: false, 
-        error: "Mot de passe incorrect" 
-      });
-    }
-  } catch (error) {
-    res.json({ 
-      success: false, 
-      error: "Erreur de connexion" 
-    });
+// CONNEXION ADMIN SIMPLE
+app.post('/admin/login', (req, res) => {
+  const { password } = req.body;
+  
+  // MOT DE PASSE SIMPLE : "123"
+  if (password === "123") {
+    res.json({ success: true, message: "Connexion admin réussie !" });
+  } else {
+    res.json({ success: false, error: "Mot de passe incorrect" });
   }
 });
 
-// PAGE ADMIN PROTÉGÉE
+// PAGE ADMIN
 app.get('/admin', (req, res) => {
   const html = `
     <!DOCTYPE html>
@@ -185,7 +163,7 @@ app.get('/admin', (req, res) => {
     <body>
       <div class="admin-container">
         <h1>🔐 Administration Hello Gasikara</h1>
-        <p>Bienvenue dans l'espace d'administration sécurisé</p>
+        <p>Bienvenue dans l'espace d'administration</p>
         
         <div class="config-form">
           <h2>🎨 Personnalisation du site</h2>
@@ -282,7 +260,7 @@ app.post('/admin/update-config', (req, res) => {
 // DÉMARRAGE DU SERVEUR
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, '0.0.0.0', () => {
-  console.log(`🚀 Serveur Hello Gasikara sécurisé démarré sur le port ${PORT}`);
-  console.log(`🔐 Mot de passe admin: "admin123"`);
+  console.log(`🚀 Serveur Hello Gasikara démarré sur le port ${PORT}`);
+  console.log(`🔐 Mot de passe admin: "123"`);
   console.log(`🌍 Site accessible: http://localhost:${PORT}`);
 });
