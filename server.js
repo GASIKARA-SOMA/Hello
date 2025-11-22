@@ -6,7 +6,7 @@ const app = express();
 app.use(express.json());
 
 // CONFIGURATION SÉCURISÉE
-const ADMIN_PASSWORD_HASH = process.env.ADMIN_PASSWORD || "$2a$10$N9qo8uLOickgx2ZMRZoMye"; // "admin123" crypté
+const ADMIN_PASSWORD_HASH = process.env.ADMIN_PASSWORD || "$2a$10$d2rYXn4Y3pY3pY3pY3pY3uY3pY3pY3pY3pY3pY3pY3pY3pY3pY3pY";
 
 // CONFIGURATION DU SITE
 let siteConfig = {
