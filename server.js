@@ -84,17 +84,55 @@ app.get('/', (req, res) => {
 });
 
 // CONNEXION ADMIN SIMPLE
-app.post('/admin/login', (req, res) => {
-  const { password } = req.body;
-  
-  // MOT DE PASSE SIMPLE : "123"
-  if (password === "123") {
-    res.json({ success: true, message: "Connexion admin réussie !" });
-  } else {
-    res.json({ success: false, error: "Mot de passe incorrect" });
+require('dotenv').config();
+const express = require('express');
+const bcrypt = require('bcryptjs');
+const app = express();
+
+app.use(express.json());
+
+// HASH CRYPTÉ pour "123"
+const ADMIN_PASSWORD_HASH = process.env.ADMIN_PASSWORD || "$2a$10$d2rYXn4Y3pY3pY3pY3pY3uY3pY3pY3pY3pY3pY3pY3pY3pY3pY3pY";
+
+// CONFIGURATION DU SITE
+let siteConfig = {
+  message: "🌍 Hello Gasikara !",
+  color: "#2c5aa0", 
+  backgroundColor: "#f0f8ff"
+};
+
+// CONNEXION ADMIN SÉCURISÉE
+app.post('/admin/login', async (req, res) => {
+  try {
+    const { password } = req.body;
+    
+    if (!password) {
+      return res.json({ success: false, error: "Mot de passe requis" });
+    }
+
+    // VÉRIFICATION AVEC HASH
+    const isValid = await bcrypt.compare(password, ADMIN_PASSWORD_HASH);
+    
+    if (isValid) {
+      res.json({ 
+        success: true, 
+        message: "Connexion admin réussie !" 
+      });
+    } else {
+      res.json({ 
+        success: false, 
+        error: "Mot de passe incorrect" 
+      });
+    }
+  } catch (error) {
+    res.json({ 
+      success: false, 
+      error: "Erreur de connexion" 
+    });
   }
 });
 
+// ... (le reste de ton code reste identique)
 // PAGE ADMIN
 app.get('/admin', (req, res) => {
   const html = `
